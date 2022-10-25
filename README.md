@@ -70,7 +70,7 @@ public:
 
 class Weapon {
 protected:
-	int weaponDamage = 0;
+	int weaponDamage=0;
 	string name;
 	int price = 0;
 public:
@@ -79,9 +79,9 @@ public:
 		this->price = weaponDamage * 30;
 	}
 
-	int getDamage() {
-		this->weaponDamage = 3 + rand() % 28;
-		return this->weaponDamage;
+	int setDamage() {
+		int weaponDamage = 3 + rand() % 28;
+		return weaponDamage ;
 	}
 
 	int getPrice() {
@@ -126,23 +126,20 @@ public:
 		this->money=money;
 	}
 
-	int setPower(int power, int prof) {
+	int setPower(int prof) {
+		int power = 20;
 		if (prof == 1) {
-			power *= 2;
+			power = (20 + rand() % 6) * 2;
 		}
-		this->power = power;
-		return this->power;
+		return power;
 	}
 
-	int getPower() {
-		return this->power;
-	}
-
-	int setEndurance(int endurance, int prof) {
+	int setEndurance(int prof) {
+		int endurance = 20;
 		if (prof == 2) {
 			endurance *= 2;
 		}
-		return this->endurance;
+		return endurance;
 	}
 
 	int getEndurance() {
@@ -158,13 +155,13 @@ public:
 	}
 
 	int setPlayerDamage(int weaponDamage, int prof) {
-		this->damage = (weaponDamage * setPower(getPower(), prof)) % 100;
-		return this->damage;
+		int damage = (weaponDamage * setPower(prof)) % 100;
+		return damage;
 	}
 
 	int setProtection(int armorProtection, int prof) {
-		int protection = (setEndurance(getEndurance(),prof) * armorProtection) % 100;
-		return this->protection;
+		int protection = (setEndurance(prof) * armorProtection) % 100;
+		return protection;
 	}
 
 	int getDefaultLv() {
@@ -258,12 +255,12 @@ public:
 
 	Weapon* generateWeapon(Weapon* weaponInfo) {
 		string name = weaponName[random(0, 6)];
-		return new Weapon(weaponInfo->getDamage(), name);
+		return new Weapon(weaponInfo->setDamage(), name);
 	}
 
 
 	Player* createPlayer(string name, int prof, int protection, int playerDamage) {
-		return new Player(20 * info->setEndurance(info->getEndurance(),prof), 30, 1, name, info->setPower(info->getPower(),prof), info->getAgility(prof), info->setEndurance(info->getEndurance(),prof));
+		return new Player(20 * info->setEndurance(prof), 30, 1, name, info->setPower(prof), info->getAgility(prof), info->setEndurance(prof));
 	}
 
 	Monster* generateMonster(int level) {
@@ -297,8 +294,8 @@ public:
 		cout << "3 2 1 FIGHT!\n";
 		for (int i = 1; i < 5; i++) {
 			playerHealth -= monsterInfo->getDamage() + info->getHealing();
-			monsterHealth -= player->setPlayerDamage(weaponInfo->getDamage(), prof);
-			cout << i << "raund: " << " Your damage:" << info->setPlayerDamage(weaponInfo->getDamage(), prof) << " Your HP:" << playerHealth << endl;
+			monsterHealth -= player->setPlayerDamage(weaponInfo->setDamage(), prof);
+			cout << i << "raund: " << " Your damage:" << info->setPlayerDamage(weaponInfo->setDamage(), prof) << " Your HP:" << playerHealth << endl;
 			cout << "Monster damage: " << monsterInfo->getDamage() << " Monster HP: " << monsterHealth << endl;
 		}
 		if (playerHealth > monsterHealth) {
@@ -318,7 +315,7 @@ class Event {
 private:
 	Engine* engine = NULL;
 	Player* info = NULL;
-	Weapon* weaponInfo = NULL;
+	Weapon* weaponInfo = new Weapon(10,"Weapon");
 	Armor* armorInfo = NULL;
 
 	bool checkPlayerMoney(int cash, int price) {
@@ -461,7 +458,7 @@ int main()
 
 	armor = engine->generateArmor(armor);
 	weapon = engine->generateWeapon(weapon);
-	user = engine->createPlayer(playerName, answer, user->setProtection(armor->getProtection(),answer), user->setPlayerDamage(weapon->getDamage(), answer));
+	user = engine->createPlayer(playerName, answer, user->setProtection(armor->getProtection(),answer), user->setPlayerDamage(weapon->setDamage(), answer));
 
 	for (int i = 0; i < 5; i++) {
 		int n = rand() % 4;
